@@ -2,10 +2,6 @@
 import { Form, Head } from '@inertiajs/vue3';
 import PasswordController from '@/actions/App/Http/Controllers/UserPasswordController';
 import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { edit } from '@/routes/password';
@@ -47,53 +43,58 @@ const breadcrumbItems: BreadcrumbItem[] = [
                     class="space-y-6"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
-                    <div class="grid gap-2">
-                        <Label for="current_password">Current password</Label>
-                        <Input
+                    <UFormField
+                        label="Current password"
+                        name="current_password"
+                        :error="errors.current_password"
+                    >
+                        <UInput
                             id="current_password"
                             name="current_password"
                             type="password"
-                            class="mt-1 block w-full"
+                            class="w-full"
                             autocomplete="current-password"
                             placeholder="Current password"
                         />
-                        <InputError :message="errors.current_password" />
-                    </div>
+                    </UFormField>
 
-                    <div class="grid gap-2">
-                        <Label for="password">New password</Label>
-                        <Input
+                    <UFormField
+                        label="New password"
+                        name="password"
+                        :error="errors.password"
+                    >
+                        <UInput
                             id="password"
                             name="password"
                             type="password"
-                            class="mt-1 block w-full"
+                            class="w-full"
                             autocomplete="new-password"
                             placeholder="New password"
                         />
-                        <InputError :message="errors.password" />
-                    </div>
+                    </UFormField>
 
-                    <div class="grid gap-2">
-                        <Label for="password_confirmation"
-                            >Confirm password</Label
-                        >
-                        <Input
+                    <UFormField
+                        label="Confirm password"
+                        name="password_confirmation"
+                        :error="errors.password_confirmation"
+                    >
+                        <UInput
                             id="password_confirmation"
                             name="password_confirmation"
                             type="password"
-                            class="mt-1 block w-full"
+                            class="w-full"
                             autocomplete="new-password"
                             placeholder="Confirm password"
                         />
-                        <InputError :message="errors.password_confirmation" />
-                    </div>
+                    </UFormField>
 
                     <div class="flex items-center gap-4">
-                        <Button
-                            :disabled="processing"
+                        <UButton
+                            type="submit"
+                            :loading="processing"
+                            label="Save password"
                             data-test="update-password-button"
-                            >Save password</Button
-                        >
+                        />
 
                         <Transition
                             enter-active-class="transition ease-in-out"
@@ -103,7 +104,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
                         >
                             <p
                                 v-show="recentlySuccessful"
-                                class="text-sm text-neutral-600"
+                                class="text-sm text-muted"
                             >
                                 Saved.
                             </p>

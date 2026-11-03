@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
-import { ShieldBan, ShieldCheck } from 'lucide-vue-next';
 import { onUnmounted, ref } from 'vue';
 import Heading from '@/components/Heading.vue';
 import TwoFactorRecoveryCodes from '@/components/TwoFactorRecoveryCodes.vue';
 import TwoFactorSetupModal from '@/components/TwoFactorSetupModal.vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { useTwoFactorAuth } from '@/composables/useTwoFactorAuth';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
@@ -56,9 +53,9 @@ onUnmounted(() => {
                     v-if="!twoFactorEnabled"
                     class="flex flex-col items-start justify-start space-y-4"
                 >
-                    <Badge variant="destructive">Disabled</Badge>
+                    <UBadge color="error" variant="subtle" label="Disabled" />
 
-                    <p class="text-muted-foreground">
+                    <p class="text-muted">
                         When you enable two-factor authentication, you will be
                         prompted for a secure pin during login. This pin can be
                         retrieved from a TOTP-supported application on your
@@ -66,22 +63,25 @@ onUnmounted(() => {
                     </p>
 
                     <div>
-                        <Button
+                        <UButton
                             v-if="hasSetupData"
+                            icon="i-lucide-shield-check"
+                            label="Continue Setup"
                             @click="showSetupModal = true"
-                        >
-                            <ShieldCheck />Continue Setup
-                        </Button>
+                        />
                         <Form
                             v-else
                             v-bind="enable.form()"
                             @success="showSetupModal = true"
                             #default="{ processing }"
                         >
-                            <Button type="submit" :disabled="processing">
-                                <ShieldCheck />Enable 2FA</Button
-                            ></Form
-                        >
+                            <UButton
+                                type="submit"
+                                icon="i-lucide-shield-check"
+                                label="Enable 2FA"
+                                :loading="processing"
+                            />
+                        </Form>
                     </div>
                 </div>
 
@@ -89,9 +89,9 @@ onUnmounted(() => {
                     v-else
                     class="flex flex-col items-start justify-start space-y-4"
                 >
-                    <Badge variant="default">Enabled</Badge>
+                    <UBadge color="success" variant="subtle" label="Enabled" />
 
-                    <p class="text-muted-foreground">
+                    <p class="text-muted">
                         With two-factor authentication enabled, you will be
                         prompted for a secure, random pin during login, which
                         you can retrieve from the TOTP-supported application on
@@ -102,14 +102,13 @@ onUnmounted(() => {
 
                     <div class="relative inline">
                         <Form v-bind="disable.form()" #default="{ processing }">
-                            <Button
-                                variant="destructive"
+                            <UButton
                                 type="submit"
-                                :disabled="processing"
-                            >
-                                <ShieldBan />
-                                Disable 2FA
-                            </Button>
+                                color="error"
+                                icon="i-lucide-shield-ban"
+                                label="Disable 2FA"
+                                :loading="processing"
+                            />
                         </Form>
                     </div>
                 </div>

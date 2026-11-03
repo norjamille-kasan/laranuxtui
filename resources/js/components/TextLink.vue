@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { LinkComponentBaseProps, Method } from '@inertiajs/core';
-import { Link } from '@inertiajs/vue3';
+import { toUrl } from '@/lib/utils';
 
 type Props = {
     href: LinkComponentBaseProps['href'];
@@ -13,13 +13,13 @@ defineProps<Props>();
 </script>
 
 <template>
-    <Link
-        :href="href"
+    <ULink
+        :to="toUrl(href)"
         :tabindex="tabindex"
         :method="method"
-        :as="as"
-        class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+        :as="as ?? 'a'"
+        class="text-primary underline decoration-primary/40 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-primary"
     >
         <slot />
-    </Link>
+    </ULink>
 </template>

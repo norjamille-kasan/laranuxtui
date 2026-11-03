@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { useTemplateRef } from 'vue';
-import ProfileController from '@/actions/App/Http/Controllers/UserProfileController';
+import { ref, useTemplateRef } from 'vue';
+import UserController from '@/actions/App/Http/Controllers/UserController';
 import Heading from '@/components/Heading.vue';
-import InputError from '@/components/InputError.vue';
-import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
+const isOpen = ref(false);
 const passwordInput = useTemplateRef('passwordInput');
+
+const focusPassword = (): void => {
+    const root = passwordInput.value?.$el as HTMLElement | undefined;
+
+    root?.querySelector('input')?.focus();
+};
+
+const closeModal = (reset: () => void, clearErrors: () => void): void => {
+    isOpen.value = false;
+    clearErrors();
+    reset();
+};
 </script>
 
 <template>
@@ -29,86 +28,69 @@ const passwordInput = useTemplateRef('passwordInput');
             description="Delete your account and all of its resources"
         />
         <div
-            class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
+            class="space-y-4 rounded-lg border border-error/20 bg-error/10 p-4"
         >
-            <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
+            <div class="space-y-0.5 text-error">
                 <p class="font-medium">Warning</p>
                 <p class="text-sm">
                     Please proceed with caution, this cannot be undone.
                 </p>
             </div>
-            <Dialog>
-                <DialogTrigger as-child>
-                    <Button variant="destructive" data-test="delete-user-button"
-                        >Delete account</Button
-                    >
-                </DialogTrigger>
-                <DialogContent>
-                    <Form
-                        v-bind="ProfileController.destroy.form()"
-                        reset-on-success
-                        @error="() => passwordInput?.$el?.focus()"
-                        :options="{
-                            preserveScroll: true,
-                        }"
-                        class="space-y-6"
-                        v-slot="{ errors, processing, reset, clearErrors }"
-                    >
-                        <DialogHeader class="space-y-3">
-                            <DialogTitle
-                                >Are you sure you want to delete your
-                                account?</DialogTitle
-                            >
-                            <DialogDescription>
-                                Once your account is deleted, all of its
-                                resources and data will also be permanently
-                                deleted. Please enter your password to confirm
-                                you would like to permanently delete your
-                                account.
-                            </DialogDescription>
-                        </DialogHeader>
+            <UModal
+                v-model:open="isOpen"
+                title="Are you sure you want to delete your account?"
+                description="Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your password to confirm you would like to permanently delete your account."
+                :ui="{ content: 'sm:max-w-lg' }"
+            >
+                <UButton
+                    color="error"
+                    label="Delete account"
+                    data-test="delete-user-button"
+                />
 
-                        <div class="grid gap-2">
-                            <Label for="password" class="sr-only"
-                                >Password</Label
-                            >
-                            <Input
+                <template #body>
+                    <Form
+                        v-bind="UserController.destroy.form()"
+                        reset-on-success
+                        :options="{ preserveScroll: true }"
+                        class="space-y-4"
+                        v-slot="{ errors, processing, reset, clearErrors }"
+                        @error="focusPassword"
+                    >
+                        <UFormField
+                            label="Password"
+                            name="password"
+                            :error="errors.password"
+                        >
+                            <UInput
                                 id="password"
+                                ref="passwordInput"
                                 type="password"
                                 name="password"
-                                ref="passwordInput"
                                 placeholder="Password"
+                                class="w-full"
                             />
-                            <InputError :message="errors.password" />
-                        </div>
+                        </UFormField>
 
-                        <DialogFooter class="gap-2">
-                            <DialogClose as-child>
-                                <Button
-                                    variant="secondary"
-                                    @click="
-                                        () => {
-                                            clearErrors();
-                                            reset();
-                                        }
-                                    "
-                                >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-
-                            <Button
-                                type="submit"
-                                variant="destructive"
+                        <div class="flex justify-end gap-2">
+                            <UButton
+                                color="neutral"
+                                variant="ghost"
+                                label="Cancel"
                                 :disabled="processing"
+                                @click="closeModal(reset, clearErrors)"
+                            />
+                            <UButton
+                                type="submit"
+                                color="error"
+                                label="Delete account"
+                                :loading="processing"
                                 data-test="confirm-delete-user-button"
-                            >
-                                Delete account
-                            </Button>
-                        </DialogFooter>
+                            />
+                        </div>
                     </Form>
-                </DialogContent>
-            </Dialog>
+                </template>
+            </UModal>
         </div>
     </div>
 </template>

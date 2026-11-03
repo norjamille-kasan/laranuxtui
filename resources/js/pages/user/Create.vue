@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
-import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
@@ -24,10 +19,9 @@ import { store } from '@/routes/register';
             v-slot="{ errors, processing }"
             class="flex flex-col gap-6"
         >
-            <div class="grid gap-6">
-                <div class="grid gap-2">
-                    <Label for="name">Name</Label>
-                    <Input
+            <div class="grid gap-4">
+                <UFormField label="Name" name="name" :error="errors.name">
+                    <UInput
                         id="name"
                         type="text"
                         required
@@ -36,13 +30,16 @@ import { store } from '@/routes/register';
                         autocomplete="name"
                         name="name"
                         placeholder="Full name"
+                        class="w-full"
                     />
-                    <InputError :message="errors.name" />
-                </div>
+                </UFormField>
 
-                <div class="grid gap-2">
-                    <Label for="email">Email address</Label>
-                    <Input
+                <UFormField
+                    label="Email address"
+                    name="email"
+                    :error="errors.email"
+                >
+                    <UInput
                         id="email"
                         type="email"
                         required
@@ -50,13 +47,16 @@ import { store } from '@/routes/register';
                         autocomplete="email"
                         name="email"
                         placeholder="email@example.com"
+                        class="w-full"
                     />
-                    <InputError :message="errors.email" />
-                </div>
+                </UFormField>
 
-                <div class="grid gap-2">
-                    <Label for="password">Password</Label>
-                    <Input
+                <UFormField
+                    label="Password"
+                    name="password"
+                    :error="errors.password"
+                >
+                    <UInput
                         id="password"
                         type="password"
                         required
@@ -64,13 +64,16 @@ import { store } from '@/routes/register';
                         autocomplete="new-password"
                         name="password"
                         placeholder="Password"
+                        class="w-full"
                     />
-                    <InputError :message="errors.password" />
-                </div>
+                </UFormField>
 
-                <div class="grid gap-2">
-                    <Label for="password_confirmation">Confirm password</Label>
-                    <Input
+                <UFormField
+                    label="Confirm password"
+                    name="password_confirmation"
+                    :error="errors.password_confirmation"
+                >
+                    <UInput
                         id="password_confirmation"
                         type="password"
                         required
@@ -78,31 +81,25 @@ import { store } from '@/routes/register';
                         autocomplete="new-password"
                         name="password_confirmation"
                         placeholder="Confirm password"
+                        class="w-full"
                     />
-                    <InputError :message="errors.password_confirmation" />
-                </div>
+                </UFormField>
 
-                <Button
+                <UButton
                     type="submit"
-                    class="mt-2 w-full"
-                    tabindex="5"
-                    :disabled="processing"
+                    block
+                    class="mt-2"
+                    :tabindex="5"
+                    :loading="processing"
+                    label="Create account"
                     data-test="register-user-button"
-                >
-                    <Spinner v-if="processing" />
-                    Create account
-                </Button>
+                />
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
+            <p class="text-center text-sm text-muted">
                 Already have an account?
-                <TextLink
-                    :href="login()"
-                    class="underline underline-offset-4"
-                    :tabindex="6"
-                    >Log in</TextLink
-                >
-            </div>
+                <TextLink :href="login()" :tabindex="6">Log in</TextLink>
+            </p>
         </Form>
     </AuthBase>
 </template>

@@ -1,11 +1,11 @@
 import { createInertiaApp } from '@inertiajs/vue3';
+import UApp from '@nuxt/ui/components/App.vue';
+import ui from '@nuxt/ui/vue-plugin';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import '../css/app.css';
 import { initializeTheme } from './composables/useAppearance';
-import ui from '@nuxt/ui/vue-plugin'
-
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -17,7 +17,9 @@ createInertiaApp({
             import.meta.glob<DefineComponent>('./pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        createApp({ render: () => h(App, props) })
+        createApp({
+            render: () => h(UApp, null, () => h(App, props)),
+        })
             .use(plugin)
             .use(ui)
             .mount(el);

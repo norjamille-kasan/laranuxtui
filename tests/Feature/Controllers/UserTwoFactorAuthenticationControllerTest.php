@@ -15,6 +15,7 @@ it('renders two factor authentication page', function (): void {
     $response->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('user-two-factor-authentication/Show')
+            ->has('requiresConfirmation')
             ->has('twoFactorEnabled'));
 });
 

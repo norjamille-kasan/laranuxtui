@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
 import TextLink from '@/components/TextLink.vue';
-import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { logout } from '@/routes';
 import { send } from '@/routes/verification';
@@ -19,27 +17,31 @@ defineProps<{
     >
         <Head title="Email verification" />
 
-        <div
+        <UAlert
             v-if="status === 'verification-link-sent'"
-            class="mb-4 text-center text-sm font-medium text-green-600"
-        >
-            A new verification link has been sent to the email address you
-            provided during registration.
-        </div>
+            color="success"
+            variant="subtle"
+            description="A new verification link has been sent to the email address you provided during registration."
+            class="mb-4"
+        />
 
         <Form
             v-bind="send.form()"
             class="space-y-6 text-center"
             v-slot="{ processing }"
         >
-            <Button :disabled="processing" variant="secondary">
-                <Spinner v-if="processing" />
-                Resend verification email
-            </Button>
+            <UButton
+                type="submit"
+                color="neutral"
+                variant="subtle"
+                :loading="processing"
+                label="Resend verification email"
+            />
 
             <TextLink
                 :href="logout()"
                 as="button"
+                method="post"
                 class="mx-auto block text-sm"
             >
                 Log out

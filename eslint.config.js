@@ -17,7 +17,6 @@ export default defineConfigWithVueTs(
             'bootstrap/ssr',
             'tailwind.config.js',
             'vite.config.ts',
-            'resources/js/components/ui/*',
             'resources/js/actions/*',
         ],
     },

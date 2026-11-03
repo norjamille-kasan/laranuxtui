@@ -18,11 +18,23 @@ return [
     */
 
     'ssr' => [
-        'enabled' => true,
+        'enabled' => (bool) env('INERTIA_SSR_ENABLED', true),
         'url' => 'http://127.0.0.1:13714',
         // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Initial Page
+    |--------------------------------------------------------------------------
+    |
+    | The Inertia v3 client reads the initial page from a JSON script element
+    | instead of the `data-page` attribute on the root element.
+    |
+    */
+
+    'use_script_element_for_initial_page' => true,
 
     /*
     |--------------------------------------------------------------------------

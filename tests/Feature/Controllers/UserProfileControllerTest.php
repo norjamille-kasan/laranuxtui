@@ -14,6 +14,7 @@ it('renders profile edit page', function (): void {
     $response->assertOk()
         ->assertInertia(fn ($page) => $page
             ->component('user-profile/Edit')
+            ->has('mustVerifyEmail')
             ->has('status'));
 });
 

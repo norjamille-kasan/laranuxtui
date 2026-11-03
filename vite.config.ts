@@ -1,9 +1,10 @@
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
+import ui from '@nuxt/ui/vite';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
-import ui from '@nuxt/ui/vite'
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -25,12 +26,13 @@ export default defineConfig({
         }),
         ui({
             router: 'inertia',
+            colorMode: false,
             ui: {
-                    colors: {
-                      primary: 'clay',
-                      neutral: 'parchment'
-                    }
-                }
-        })
+                colors: {
+                    primary: 'clay',
+                    neutral: 'parchment',
+                },
+            },
+        }),
     ],
 });
