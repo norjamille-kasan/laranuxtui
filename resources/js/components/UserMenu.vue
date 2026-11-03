@@ -64,8 +64,10 @@ const items = computed(() => [
             variant="ghost"
             :avatar="userAvatar"
             :label="label ? user.name : undefined"
-            trailing-icon="i-lucide-chevrons-up-down"
-            class="w-full"
+            :trailing-icon="label ? 'i-lucide-chevrons-up-down' : undefined"
+            :square="!label"
+            :ui="label ? { trailingIcon: 'text-dimmed ms-auto' } : undefined"
+            class="w-full overflow-hidden"
             data-test="sidebar-menu-button"
         />
     </UDropdownMenu>

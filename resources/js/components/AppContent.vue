@@ -8,18 +8,16 @@ const props = defineProps<Props>();
 </script>
 
 <template>
-    <UDashboardPanel
+    <div
         v-if="props.variant === 'sidebar'"
-        id="main"
+        class="flex flex-1 flex-col overflow-hidden"
         :class="props.class"
     >
-        <template v-if="$slots.header" #header>
-            <slot name="header" />
-        </template>
-        <template #body>
+        <slot name="header" />
+        <main class="flex flex-1 flex-col overflow-y-auto p-4 sm:p-6">
             <slot />
-        </template>
-    </UDashboardPanel>
+        </main>
+    </div>
     <main
         v-else
         class="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl"

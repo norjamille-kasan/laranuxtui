@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
+import { watch } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
+import { useSidebar } from '@/composables/useSidebar';
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 
@@ -28,37 +30,56 @@ const footerNavItems: NavItem[] = [
     },
 ];
 
-const user = usePage().props.auth.user;
+const page = usePage();
+const user = page.props.auth.user;
+const { isOpen, closeOnMobile } = useSidebar();
+
+watch(() => page.url, closeOnMobile);
 </script>
 
 <template>
-    <UDashboardSidebar
-        collapsible
-        :default-size="18"
-        :min-size="14"
-        :max-size="26"
-        :ui="{ footer: 'border-t border-default' }"
+    <USidebar
+        v-model:open="isOpen"
+        collapsible="icon"
+        :ui="{ container: 'h-full' }"
     >
-        <template #header="{ collapsed }">
-            <Link
-                :href="dashboard()"
-                class="flex w-full items-center gap-2 overflow-hidden"
-            >
-                <AppLogo :collapsed="collapsed" />
-            </Link>
+        <template #header="{ state, close }">
+            <div class="flex w-full items-center gap-2 overflow-hidden">
+                <Link
+                    :href="dashboard()"
+                    class="flex min-w-0 flex-1 items-center gap-2 overflow-hidden"
+                >
+                    <AppLogo :collapsed="state === 'collapsed'" />
+                </Link>
+                <UButton
+                    v-if="state === 'expanded'"
+                    icon="i-lucide-x"
+                    color="neutral"
+                    variant="ghost"
+                    size="xs"
+                    square
+                    aria-label="Close sidebar"
+                    @click="close"
+                />
+            </div>
         </template>
 
-        <template #default="{ collapsed }">
-            <NavMain :items="mainNavItems" :collapsed="collapsed" />
-            <NavFooter
-                :items="footerNavItems"
-                :collapsed="collapsed"
-                class="mt-auto"
-            />
+        <template #default="{ state }">
+            <div class="flex h-full flex-col gap-1">
+                <NavMain
+                    :items="mainNavItems"
+                    :collapsed="state === 'collapsed'"
+                />
+                <NavFooter
+                    :items="footerNavItems"
+                    :collapsed="state === 'collapsed'"
+                    class="mt-auto"
+                />
+            </div>
         </template>
 
-        <template #footer="{ collapsed }">
-            <NavUser :user="user" :collapsed="collapsed" />
+        <template #footer="{ state }">
+            <NavUser :user="user" :collapsed="state === 'collapsed'" />
         </template>
-    </UDashboardSidebar>
+    </USidebar>
 </template>

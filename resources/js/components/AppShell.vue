@@ -9,13 +9,9 @@ defineProps<Props>();
 </script>
 
 <template>
-    <UDashboardGroup
-        v-if="variant === 'sidebar'"
-        storage="local"
-        storage-key="dashboard-sidebar"
-    >
+    <div v-if="variant === 'sidebar'" class="flex h-svh w-full overflow-hidden">
         <slot />
-    </UDashboardGroup>
+    </div>
     <div v-else class="flex min-h-screen w-full flex-col">
         <slot />
     </div>
