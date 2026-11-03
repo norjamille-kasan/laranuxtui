@@ -6,6 +6,7 @@ import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import '../css/app.css';
 import { initializeTheme } from './composables/useAppearance';
+import { initializeFlashToast } from './lib/flashToast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -17,12 +18,15 @@ createInertiaApp({
             import.meta.glob<DefineComponent>('./pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        createApp({
+        const app = createApp({
             render: () => h(UApp, null, () => h(App, props)),
-        })
-            .use(plugin)
-            .use(ui)
-            .mount(el);
+        });
+
+        app.use(plugin).use(ui);
+
+        initializeFlashToast(app);
+
+        app.mount(el);
     },
     progress: {
         color: '#4B5563',
