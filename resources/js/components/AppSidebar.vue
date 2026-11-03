@@ -17,7 +17,6 @@ const mainNavItems: NavItem[] = [
 ];
 
 const page = usePage();
-const user = page.props.auth.user;
 const { isOpen, closeOnMobile } = useSidebar();
 
 watch(() => page.url, closeOnMobile);
@@ -55,7 +54,10 @@ watch(() => page.url, closeOnMobile);
         </template>
 
         <template #footer="{ state }">
-            <NavUser :user="user" :collapsed="state === 'collapsed'" />
+            <NavUser
+                :user="page.props.auth.user"
+                :collapsed="state === 'collapsed'"
+            />
         </template>
     </USidebar>
 </template>

@@ -28,6 +28,11 @@ final readonly class UserProfileController
     {
         $action->handle($user, $request->validated());
 
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Profile updated.',
+        ]);
+
         return to_route('user-profile.edit');
     }
 }

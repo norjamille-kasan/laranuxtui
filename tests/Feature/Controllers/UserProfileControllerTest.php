@@ -33,6 +33,13 @@ it('may update profile information', function (): void {
 
     $response->assertRedirectToRoute('user-profile.edit');
 
+    $response->assertSessionHas('inertia.flash_data', [
+        'toast' => [
+            'type' => 'success',
+            'message' => 'Profile updated.',
+        ],
+    ]);
+
     expect($user->refresh()->name)->toBe('New Name')
         ->and($user->email)->toBe('new@example.com');
 });
