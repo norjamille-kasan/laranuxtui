@@ -32,6 +32,9 @@ export default defineConfig({
                     primary: 'clay',
                     neutral: 'parchment',
                 },
+                icons: {
+                      loading: 'i-lucide-loader',
+                }
             },
         }),
     ],
