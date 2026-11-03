@@ -37,6 +37,14 @@ const ecosystemLinks = [
         to: 'https://cloud.laravel.com',
         target: '_blank',
     },
+    {
+        title: 'Style with Nuxt UI',
+        description:
+            'Nuxt UI provides accessible, themeable Vue components built on Tailwind CSS and Reka UI.',
+        icon: 'i-lucide-palette',
+        to: 'https://ui.nuxt.com',
+        target: '_blank',
+    },
 ];
 </script>
 
@@ -106,7 +114,7 @@ const ecosystemLinks = [
                     ]"
                 />
 
-                <UPageGrid class="pb-24">
+                <UPageGrid class="pb-24 lg:grid-cols-4">
                     <UPageCard
                         v-for="link in ecosystemLinks"
                         :key="link.title"
@@ -129,6 +137,13 @@ const ecosystemLinks = [
                     class="hover:text-default"
                 >
                     Documentation
+                </ULink>
+                <ULink
+                    to="https://ui.nuxt.com"
+                    target="_blank"
+                    class="hover:text-default"
+                >
+                    Nuxt UI
                 </ULink>
                 <ULink
                     to="https://github.com/laravel/vue-starter-kit"
