@@ -1,21 +1,26 @@
-- Inertia & Vue (this project) version: **[github.com/nunomaduro/laravel-starter-kit-inertia-vue](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**
-- Inertia & React version: **[github.com/nunomaduro/laravel-starter-kit-inertia-react](https://github.com/nunomaduro/laravel-starter-kit-inertia-react)**
-- Blade version: **[github.com/nunomaduro/laravel-starter-kit](https://github.com/nunomaduro/laravel-starter-kit)**
+# Laravel Starter Kit (Inertia, Vue & Nuxt UI)
 
-<p align="center">
-    <a href="https://youtu.be/VhzP0XWGTC4" target="_blank">
-        <img src="https://github.com/nunomaduro/laravel-starter-kit/blob/main/art/banner.png" alt="Overview Laravel Starter Kit" style="width:70%;">
-    </a>
-</p>
+An opinionated, type-safe [Laravel](https://laravel.com) starter kit based on
+**[Nuno Maduro's Laravel Starter Kit (Inertia & Vue)](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**,
+rebuilt with **[Nuxt UI](https://ui.nuxt.com)**.
 
 <p>
-    <a href="https://github.com/nunomaduro/laravel-starter-kit-inertia-vue/actions"><img src="https://github.com/nunomaduro/laravel-starter-kit-inertia-vue/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-vue"><img src="https://img.shields.io/packagist/dt/nunomaduro/laravel-starter-kit-inertia-vue" alt="Total Downloads"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-vue"><img src="https://img.shields.io/packagist/v/nunomaduro/laravel-starter-kit-inertia-vue" alt="Latest Stable Version"></a>
-    <a href="https://packagist.org/packages/nunomaduro/laravel-starter-kit-inertia-vue"><img src="https://img.shields.io/packagist/l/nunomaduro/laravel-starter-kit-inertia-vue" alt="License"></a>
+    <a href="https://github.com/norjamille-kasan/laranuxtui/actions"><img src="https://github.com/norjamille-kasan/laranuxtui/actions/workflows/tests.yml/badge.svg" alt="Build Status"></a>
+    <a href="https://packagist.org/packages/norjamille-kasan/laravel-starter-kit-nuxt-ui"><img src="https://img.shields.io/packagist/dt/norjamille-kasan/laravel-starter-kit-nuxt-ui" alt="Total Downloads"></a>
+    <a href="https://packagist.org/packages/norjamille-kasan/laravel-starter-kit-nuxt-ui"><img src="https://img.shields.io/packagist/v/norjamille-kasan/laravel-starter-kit-nuxt-ui" alt="Latest Stable Version"></a>
+    <a href="https://packagist.org/packages/norjamille-kasan/laravel-starter-kit-nuxt-ui"><img src="https://img.shields.io/packagist/l/norjamille-kasan/laravel-starter-kit-nuxt-ui" alt="License"></a>
 </p>
 
-**Laravel Starter Kit (Inertia & Vue)** is an ultra-strict, type-safe [Laravel](https://laravel.com) skeleton engineered for developers who refuse to compromise on code quality. This opinionated starter kit enforces rigorous development standards through meticulous tooling configuration and architectural decisions that prioritize type safety, immutability, and fail-fast principles.
+**Laravel Starter Kit (Inertia, Vue & Nuxt UI)** keeps the ultra-strict, type-safe foundation of Nuno Maduro's starter kit and swaps its shadcn-vue UI layer for [Nuxt UI](https://ui.nuxt.com) v4. Every page, layout and shared component is built from Nuxt UI components on Tailwind CSS v4, on top of the same Actions-oriented architecture, 100% type coverage and fail-fast tooling.
+
+## Nuxt UI Edition
+
+- **Nuxt UI v4 components**: accessible, themeable components built on Reka UI and Tailwind CSS v4 — `UApp`, `UButton`, `UFormField`, `UInput`, `UModal`, `UPinInput`, `UCard`, `UAlert`, `UDropdownMenu`, and more.
+- **Nuxt UI sidebar shell**: `USidebar` with icon collapse, cookie-persisted state and a mobile slideover.
+- **Persistent layouts**: pages declare their layout with `defineOptions({ layout })` and pass breadcrumbs through `setLayoutProps`.
+- **Flash toasts**: `Inertia::flash('toast', [...])` renders Nuxt UI toasts through `resources/js/lib/flashToast.ts`.
+- **Appearance**: Nuxt UI's color mode is disabled in favour of the starter kit's cookie-based light/dark/system setting.
+- **AI tooling**: the Nuxt UI MCP server and skill are included (`.agents/skills/nuxt-ui`, `opencode.json`).
 
 ## Why This Starter Kit?
 
@@ -32,7 +37,7 @@ Modern PHP has evolved into a mature, type-safe language, yet many Laravel proje
 - **Just Better Laravel Defaults**: Thanks to **[Essentials](https://github.com/nunomaduro/essentials)** / strict models, auto eager loading, immutable dates, and more...
 - **AI Guidelines**: Integrated AI Guidelines to assist in maintaining code quality and consistency
 - **Full Testing Suite**: More than 150 tests with 100% code coverage using Pest
--
+
 This isn't just another Laravel boilerplate—it's a statement that PHP applications can and should be built with the same rigor as strongly-typed languages like Rust or TypeScript.
 
 ## Getting Started
@@ -42,7 +47,7 @@ This isn't just another Laravel boilerplate—it's a statement that PHP applicat
 Create your type-safe Laravel application using [Composer](https://getcomposer.org):
 
 ```bash
-composer create-project nunomaduro/laravel-starter-kit-inertia-vue --prefer-dist example-app
+composer create-project norjamille-kasan/laravel-starter-kit-nuxt-ui --prefer-dist example-app
 ```
 
 ### Initial Setup
@@ -98,4 +103,8 @@ You should see 100% test coverage and all quality checks passing.
 
 ## License
 
-**Laravel Starter Kit Inertia Vue** was created by **[Nuno Maduro](https://x.com/enunomaduro)** under the **[MIT license](https://opensource.org/licenses/MIT)**.
+**Laravel Starter Kit (Inertia, Vue & Nuxt UI)** is released under the
+**[MIT license](https://opensource.org/licenses/MIT)**.
+
+It is based on **[Laravel Starter Kit (Inertia & Vue)](https://github.com/nunomaduro/laravel-starter-kit-inertia-vue)**
+by **[Nuno Maduro](https://x.com/enunomaduro)**, also released under the MIT license.

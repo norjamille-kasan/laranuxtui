@@ -1,4 +1,5 @@
 {
+    "name": "laravel-starter-kit-nuxt-ui",
     "private": true,
     "type": "module",
     "scripts": {

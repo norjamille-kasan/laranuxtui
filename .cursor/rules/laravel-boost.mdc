@@ -23,16 +23,16 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-final readonly class CreateFavorite
+final readonly class CreateOrder
 {
-    public function __construct(private FavoriteService $favorites)
+    public function __construct(private OrderService $orders)
     {
         //
     }
 
-    public function handle(User $user, string $favorite): bool
+    public function handle(User $user, string $reference): bool
     {
-        return $this->favorites->add($user, $favorite);
+        return $this->orders->place($user, $reference);
     }
 }
 
@@ -43,6 +43,172 @@ final readonly class CreateFavorite
 # General Guidelines
 
 - Don't include any superfluous PHP Annotations, except ones that start with `@` for typing variables.
+
+=== .ai/app.http.controllers rules ===
+
+# App/Http/Controllers guidelines
+
+- Controllers are CRUD by design: their only public methods are `index`, `create`, `store`, `show`, `edit`, `update`, and `destroy`.
+- Never add a custom method (`approve`, `pin`, `hold`, `export`, `fulfil`). Instead, find the resource being created, updated, or deleted, and give it its own controller:
+  - Approving an order → `OrderApprovalController@store`. Rejecting it → `OrderRejectionController@store`.
+  - Pinning an order → `OrderPinController@update`. Unpinning it → `OrderPinController@destroy`.
+  - Holding an order → `OrderHoldController@store`. Releasing it → `OrderHoldController@destroy`.
+  - Approving the selected orders in the fulfilment queue → `FulfilmentController@update`.
+- When an endpoint really does not fit CRUD, that is the sign to use an invokable controller with a single `__invoke()` method, named after the thing, minimally: `ExportController`, not `PersonalDataExportController` or `ExportPersonalDataController`.
+- Controller names are nouns, never verbs: `OrderStarController`, not `StarOrderController`.
+- Controllers stay thin: resolve the form request, call one action (or query), and return a response.
+- Controllers never authorize or validate anything: no `abort()`, `abort_if()`, `abort_unless()`, `throw_if()`, `throw_unless()`, `$request->validate()`, `Validator::make()`, or `ValidationException`. Every check lives in the form request of that endpoint.
+- `tests/Unit/ArchTest.php` enforces this.
+
+<code-snippet name="Example controller" lang="php">
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
+
+use App\Actions\CreateOrderStar;
+use App\Actions\DeleteOrderStar;
+use App\Http\Requests\CreateOrderStarRequest;
+use App\Http\Requests\DeleteOrderStarRequest;
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Http\RedirectResponse;
+
+final readonly class OrderStarController
+{
+    public function store(CreateOrderStarRequest $request, #[CurrentUser] User $user, Order $order, CreateOrderStar $action): RedirectResponse
+    {
+        $action->handle($user, $order);
+
+        return back();
+    }
+
+    public function destroy(DeleteOrderStarRequest $request, #[CurrentUser] User $user, Order $order, DeleteOrderStar $action): RedirectResponse
+    {
+        $action->handle($user, $order);
+
+        return back();
+    }
+}
+
+</code-snippet>
+
+=== .ai/app.http.requests rules ===
+
+# App/Http/Requests guidelines
+
+- Never use policies or gates: no `app/Policies`, no `Gate::define()`, no `can:` middleware, no `$user->can()`, no `$this->authorize()`.
+- Authorization and validation only ever happen in form requests: authorization in `authorize()`, validation in `rules()`. Never in controllers, actions, or models. This includes `index` and `show` endpoints.
+- Controllers and actions never check anything themselves: no `abort()`, `abort_if()`, `abort_unless()`, `throw_if()`, `throw_unless()`, `Validator::make()`, `$request->validate()`, or `ValidationException`.
+- Create a dedicated form request for each endpoint that checks anything, and never share one between endpoints. If the endpoint has none yet, create one.
+- Name it after the controller method it serves, CRUD by design: `index` → `List…Request`, `show` → `Show…Request`, `store` → `Create…Request`, `update` → `Update…Request`, `destroy` → `Delete…Request`. For example `OrderPinController@update` → `UpdateOrderPinRequest`, `OrderPinController@destroy` → `DeleteOrderPinRequest`, `OrderApprovalController@store` → `CreateOrderApprovalRequest`.
+- When hiding something should look like it does not exist, return `Response::denyAsNotFound()` from `authorize()` instead of `false`.
+- Put input interpretation in form request methods (`$request->tab()`, `$request->parent()`), and complex checks in `App\Rules` validation rules.
+- `tests/Unit/ArchTest.php` enforces this.
+
+<code-snippet name="Example form request" lang="php">
+
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests;
+
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Foundation\Http\FormRequest;
+
+final class CreateOrderNoteRequest extends FormRequest
+{
+    public function authorize(): Response
+    {
+        $user = $this->user();
+        assert($user instanceof User);
+
+        $order = $this->route('order');
+        assert($order instanceof Order);
+
+        return $order->isVisibleTo($user) ? Response::allow() : Response::denyAsNotFound();
+    }
+
+    /**
+     * @return array{}
+     */
+    public function rules(): array
+    {
+        return [];
+    }
+}
+
+</code-snippet>
+
+=== .ai/resources.js.http rules ===
+
+# Frontend HTTP requests
+
+- Every call to an API route goes through `useHttp()` from `@inertiajs/vue3`. Never `fetch()`, never `XMLHttpRequest`, and never an HTTP library: no `axios`, no `ky`, no `got`, no `superagent`. Axios is not a dependency of this app and must not become one.
+- Use the documented `get()`, `post()`, `put()`, `patch()`, `delete()`, or `submit()` methods with the endpoint URL and optional lifecycle callbacks. For application routes, use the Wayfinder route object's `.url(...)` when passing the endpoint to these methods. These methods return a promise that resolves with the parsed JSON response; do not pass the route object itself.
+- Initialize request data on the hook, for example `const form = useHttp({ name: '' })`, then update `form.name` before calling `form.post(url)`. Request data is sent from the hook instance.
+- Read state off the hook instead of tracking it by hand: `processing`, `errors`, `hasErrors`, `wasSuccessful`, `recentlySuccessful`, `progress`, and `isDirty`. Validation errors are exposed through `errors`; `cancel()` aborts, `optimistic()` updates data before the response lands, and `withPrecognition()` enables real-time validation.
+- `useHttp` is for JSON endpoints and performs no Inertia visit: the page does not change. Page transitions and form submissions that should navigate keep using `router` and `useForm`.
+- `resources/js/composables/useTwoFactorAuth.ts` is the reference implementation in this app.
+
+<code-snippet name="Example useHttp calls" lang="ts">
+
+import { useHttp } from '@inertiajs/vue3';
+import { search } from '@/actions/App/Http/Controllers/SearchController';
+
+const http = useHttp({ query: '' });
+
+async function search(): Promise<void> {
+    const results = await http.get(search.url(), {
+        onSuccess: (data) => {
+            console.log(data);
+        },
+    });
+
+    console.log(results);
+}
+
+</code-snippet>
+
+=== .ai/resources.js rules ===
+
+# Frontend UI stability
+
+Every UI change keeps the layout still. Nothing may flash, jump, clip or reflow on first load, navigation, polling, or after an action.
+
+## Loading
+
+- A skeleton occupies exactly the loaded content's box: same height, line count and wrapping at every breakpoint, including the narrow aside. It is visible in light and dark mode, popovers included.
+- Delay skeletons by about 300ms so fast responses show nothing. Show one only while data is genuinely missing, never while refetching data you already have.
+- Shared props that persist across pages (aside, nav counts) use `Inertia::defer(...)->once()`, so client visits don't refetch them and flash.
+- Polling and refresh buttons use partial reloads (`only: [...]`) of the page's own props. Never reload the whole page, and keep showing the old data until the new data arrives.
+
+## Changing content
+
+- Numbers, counts and countdowns use `tabular-nums` in fixed-width slots.
+- Buttons whose label changes ("Place order", "Placing…") get a `min-w`. Disabled, loading and enabled states are the same size.
+- Conditional UI (banners, "@x is reviewing", inline confirms, errors) reserves its space or overlays. An inline confirm fits in the slot of the control it replaces.
+- Removed list rows collapse with the existing order-deletion animation, keeping scroll position and focus.
+- Right after an action, the control under the cursor must not flip to a destructive state, e.g. "Place order" → "Cancel order" before the pointer leaves.
+
+## Overflow
+
+- Dialogs and popovers are capped to the viewport (`dvh`) and scroll inside, with a sticky header and footer when actions would scroll away. No double scrollbars and no page scroll through the overlay. Scroll lock must not shift the page: keep `scrollbar-gutter: stable`.
+- Long usernames, URLs, reasons, queue names and messages use `min-w-0` with `truncate` or `line-clamp`, and the full text in `title`.
+- Auto-growing textareas are `overflow-x-hidden`. Inputs use at least 16px text below `md` so iOS doesn't zoom.
+- On mobile, toasts sit above the bottom nav.
+
+## Verify before calling it done
+
+- Check in a browser at 1440×900, 1366×650 and 390×844, in light and dark.
+- Measure layout shift (`PerformanceObserver` with `layout-shift`) for first load, navigation, a polling cycle and every action you added. The target is 0.
+- Compare side by side with `production` using the same demo data. Record before/after clips for any fix to motion or loading.
 
 === foundation rules ===
 
@@ -414,7 +580,7 @@ it('may reset the password', function () {
     $page->assertSee('Sign In')
         ->assertNoJavascriptErrors() // or ->assertNoConsoleLogs()
         ->click('Forgot Password?')
-        ->fill('email', 'nuno@laravel.com')
+        ->fill('email', 'user@example.com')
         ->click('Send Reset Link')
         ->assertSee('We have emailed your password reset link!')
 

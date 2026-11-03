@@ -1,13 +1,29 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "nunomaduro/laravel-starter-kit-inertia-vue",
+    "name": "norjamille-kasan/laravel-starter-kit-nuxt-ui",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "An opinionated, type-safe Laravel starter kit based on Nuno Maduro's Inertia & Vue starter kit, rebuilt with Nuxt UI.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "inertia",
+        "vue",
+        "nuxt-ui",
+        "starter-kit",
+        "typescript"
     ],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Jam",
+            "email": "jamclong0328@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/norjamille-kasan/laranuxtui",
+    "support": {
+        "issues": "https://github.com/norjamille-kasan/laranuxtui/issues",
+        "source": "https://github.com/norjamille-kasan/laranuxtui"
+    },
     "require": {
         "php": "^8.4.0",
         "inertiajs/inertia-laravel": "^2.0.21",
@@ -67,8 +83,7 @@
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
             "@php artisan clear",
             "@update:requirements",
-            "@php artisan boost:update --ansi || true",
-            "@php artisan boost:update --ansi"
+            "@php artisan boost:update --ansi || true"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -87,15 +102,15 @@
             "pint --parallel",
             "bun run lint"
         ],
-        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:type-coverage": "php -d memory_limit=1G vendor/bin/pest --type-coverage --min=100",
         "test:lint": [
             "pint --parallel --test",
             "rector --dry-run",
             "bun run test:lint"
         ],
-        "test:unit": "XDEBUG_MODE=\"coverage\" pest --parallel --coverage --exactly=100.0",
+        "test:unit": "XDEBUG_MODE=\"coverage\" php -d memory_limit=1G vendor/bin/pest --parallel --coverage --exactly=100.0",
         "test:types": [
-            "phpstan",
+            "phpstan --memory-limit=1G",
             "bun run test:types"
         ],
         "test": [
