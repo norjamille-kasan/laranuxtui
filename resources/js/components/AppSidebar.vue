@@ -2,7 +2,6 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
 import AppLogo from '@/components/AppLogo.vue';
-import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { useSidebar } from '@/composables/useSidebar';
@@ -14,19 +13,6 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: 'i-lucide-layout-grid',
-    },
-];
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: 'i-lucide-folder',
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: 'i-lucide-book-open',
     },
 ];
 
@@ -65,17 +51,7 @@ watch(() => page.url, closeOnMobile);
         </template>
 
         <template #default="{ state }">
-            <div class="flex h-full flex-col gap-1">
-                <NavMain
-                    :items="mainNavItems"
-                    :collapsed="state === 'collapsed'"
-                />
-                <NavFooter
-                    :items="footerNavItems"
-                    :collapsed="state === 'collapsed'"
-                    class="mt-auto"
-                />
-            </div>
+            <NavMain :items="mainNavItems" :collapsed="state === 'collapsed'" />
         </template>
 
         <template #footer="{ state }">
