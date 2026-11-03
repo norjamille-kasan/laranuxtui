@@ -45,6 +45,7 @@
 
 :root,
 .light {
+    --ui-header-height: 3.5rem;
     --ui-bg: var(--ui-color-neutral-100);
     --ui-bg-muted: var(--ui-color-neutral-200);
     --ui-bg-elevated: var(--ui-color-neutral-200);
