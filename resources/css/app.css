@@ -61,7 +61,7 @@
     --ui-bg: var(--ui-color-neutral-900);
     --ui-bg-muted: var(--ui-color-neutral-800);
     --ui-bg-elevated: var(--ui-color-neutral-800);
-    --ui-border: var(--ui-color-neutral-800);
+    --ui-border: var(--ui-color-neutral-700);
     --ui-border-muted: var(--ui-color-neutral-700);
-    --ui-border-accented: var(--ui-color-neutral-700);
+    --ui-border-accented: var(--ui-color-neutral-600);
 }
